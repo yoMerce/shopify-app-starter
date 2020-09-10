@@ -1,0 +1,21 @@
+{
+  "name": "@yomerce/shopify-app-starter",
+  "version": "1.0.0",
+  "description": "Shopify App Starter using Node.js, Next.js and Shopify Polaris",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoMerce/shopify-app-starter.git"
+  },
+  "keywords": [],
+  "author": "contact@yomerce.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yoMerce/shopify-app-starter/issues"
+  },
+  "homepage": "https://github.com/yoMerce/shopify-app-starter#readme"
+}
