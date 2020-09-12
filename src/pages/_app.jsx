@@ -1,7 +1,7 @@
-const { ApolloClient } = require("apollo-boost");
-const { ApolloProvider } = require("react-apollo");
-const { AppProvider } = require("@shopify/polaris");
-const translations = require("@shopify/polaris/locales/en.json");
+import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "react-apollo";
+import { AppProvider } from "@shopify/polaris";
+import translations from "@shopify/polaris/locales/en.json";
 
 const client = new ApolloClient();
 
@@ -17,4 +17,4 @@ function App({ Component, pageProps }) {
   );
 }
 
-module.exports = App;
+export default App;
