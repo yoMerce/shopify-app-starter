@@ -1,5 +1,7 @@
 const config = Object.freeze({
-  "shopify": {},
+  "shopify": {
+    "apiKey": process.env.SHOPIFY_API_KEY
+  },
   "server": {
     "port": 8050
   },
