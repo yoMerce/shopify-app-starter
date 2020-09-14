@@ -5,8 +5,10 @@ const Koa = require("koa");
 const Router = require("@koa/router");
 const session = require("koa-session");
 const graphQLProxy, {ApiVersion} = require("@shopify/koa-shopify-graphql-proxy");
+const {verifyRequest} = require("@shopify/koa-shopify-auth");
 
 const Config = require("../config");
+const {setupAuth} = require("./middlewares");
 
 const dev = Config.env !== "production";
 
@@ -30,12 +32,15 @@ function configureApp() {
       // Add keys for signing cookies
       server.keys = [Config.shopify.secret];
 
+      // middlewares
+      server.use(setupAuth());
+
       // Add Graphql Proxy for shopify
       server.use(graphQLProxy({
         version: ApiVersion.October19
       }));
     
-      router.get("(.*)", async (ctx) => {
+      router.get("(.*)", verifyRequest, async (ctx) => {
         await handler(ctx.req, ctx.res);
         ctx.respond = false;
         ctx.status = 200;
