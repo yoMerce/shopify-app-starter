@@ -12,7 +12,7 @@ const client = new ApolloClient({
 });
 
 function App({ Component, pageProps }) {
-  const shopOrigin = Cookies.get("shopOrigin");
+  const shopOrigin = Cookies.get(COOKIE_KEY);
 
   return (
     <>
