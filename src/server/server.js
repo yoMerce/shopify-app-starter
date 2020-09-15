@@ -3,6 +3,8 @@ const ngrok = require("ngrok");
 const configureApp = require("./app");
 const Config = require("../config");
 
+console.log(Config);
+
 async function start() {
   const app = await configureApp();
   app.listen(Config.server.port);
