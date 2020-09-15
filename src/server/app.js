@@ -4,7 +4,7 @@ const next = require("next");
 const Koa = require("koa");
 const Router = require("@koa/router");
 const session = require("koa-session");
-const graphQLProxy, {ApiVersion} = require("@shopify/koa-shopify-graphql-proxy");
+const {"default": graphQLProxy, ApiVersion} = require("@shopify/koa-shopify-graphql-proxy");
 const {verifyRequest} = require("@shopify/koa-shopify-auth");
 
 const Config = require("../config");

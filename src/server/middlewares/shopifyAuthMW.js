@@ -1,4 +1,4 @@
-const createShopifyAuth = require("@shopify/koa-shopify-auth");
+const {"default": createShopifyAuth} = require("@shopify/koa-shopify-auth");
 
 const Config = require("../../config");
 
