@@ -37,7 +37,7 @@ function configureApp() {
 
       // Add Graphql Proxy for shopify
       server.use(graphQLProxy({
-        version: ApiVersion.October19
+        version: ApiVersion.January20
       }));
     
       router.get("(.*)", verifyRequest, async (ctx) => {
