@@ -1,4 +1,4 @@
-const config = Object.freeze({
+const config = {
   "shopify": {
     "apiKey": process.env.SHOPIFY_API_KEY,
     "secret": process.env.SHOPIFY_API_SECRET,
@@ -8,7 +8,7 @@ const config = Object.freeze({
   "server": {
     "port": 8050
   },
-  "env": process.env.NODE_ENV
-});
+  "env": process.env.NODE_ENV || "local"
+};
 
 module.exports = config;

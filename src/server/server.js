@@ -7,11 +7,11 @@ async function start() {
   const app = await configureApp();
   app.listen(Config.server.port);
 
-  await ngrok.connect(Config.server.port);
-
-  const apiUrl = ngrok.getUrl();
-
-  console.log(apiUrl);
+  if(Config.env !== "local") {
+    await ngrok.connect(Config.server.port);
+    const apiUrl = ngrok.getUrl();
+    console.log(apiUrl);
+  }
 }
 
 start();

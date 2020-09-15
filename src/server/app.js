@@ -5,10 +5,9 @@ const Koa = require("koa");
 const Router = require("@koa/router");
 const session = require("koa-session");
 const {"default": graphQLProxy, ApiVersion} = require("@shopify/koa-shopify-graphql-proxy");
-const {verifyRequest} = require("@shopify/koa-shopify-auth");
 
 const Config = require("../config");
-const {setupAuth} = require("./middlewares");
+const {setupAuth, mwVerifyRequest} = require("./middlewares");
 
 const dev = Config.env !== "production";
 
@@ -40,7 +39,7 @@ function configureApp() {
         version: ApiVersion.January20
       }));
     
-      router.get("(.*)", verifyRequest, async (ctx) => {
+      router.get("(.*)", mwVerifyRequest, async (ctx) => {
         await handler(ctx.req, ctx.res);
         ctx.respond = false;
         ctx.status = 200;
