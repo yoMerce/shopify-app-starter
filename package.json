@@ -1,0 +1,33 @@
+{
+  "name": "shopify-app-starter",
+  "version": "1.0.0",
+  "description": "Shopify App Starter",
+  "main": "index.js",
+  "author": "Yomerce (https://yomerce.com)",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.3.0",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yoMerce/shopify-app-starter.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yoMerce/shopify-app-starter/issues"
+  },
+  "homepage": "https://github.com/yoMerce/shopify-app-starter#readme"
+}
