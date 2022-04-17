@@ -7,7 +7,7 @@ function App() {
   return (
     <AppBridgeProvider
       config={{
-        apiKey: import.meta.env.SHOPIFY_API_KEY || "",
+        apiKey: process.env.SHOPIFY_API_KEY || "",
         host: new URL(location.toString()).searchParams.get("host") || "",
         forceRedirect: true,
       }}
