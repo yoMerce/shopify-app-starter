@@ -7,15 +7,34 @@
   "scripts": {
     "update": "ncu -u",
     "update:check": "ncu",
+    "dev": "vite",
+    "start": "NODE_ENV=production node server-dist/index.js",
+    "build": "tsc",
     "pretty": "prettier --write ./src",
     "lint:staged": "lint-staged"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@shopify/shopify-api": "^3.0.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cryptr": "^6.0.2",
+    "express": "^4.17.3",
+    "graphql": "^16.3.0",
+    "serve-static": "^1.15.0"
+  },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.2",
+    "@types/compression": "^1.7.2",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/mocha": "^9.1.0",
     "dotenv": "^16.0.0",
     "lint-staged": "^12.3.8",
+    "localtunnel": "^2.0.2",
+    "nodemon": "^2.0.15",
     "npm-check-updates": "^12.5.8",
-    "prettier": "^2.6.2"
+    "prettier": "^2.6.2",
+    "typescript": "^4.6.3"
   },
   "repository": {
     "type": "git",

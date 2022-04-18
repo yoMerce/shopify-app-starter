@@ -7,11 +7,11 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": false,
-    "outDir": "dist-server",
+    "outDir": "../dist-server",
     "types": ["node", "mocha"],
     "baseUrl": ".",
     "paths": {},
     "resolveJsonModule": true
   },
-  "include": ["server/**/*"]
+  "include": ["src"]
 }

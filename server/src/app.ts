@@ -1,4 +1,4 @@
-import fs from "fs";
+import * as fs from "fs";
 import Express from "express";
 import compression from "compression";
 import serveStatic from "serve-static";
