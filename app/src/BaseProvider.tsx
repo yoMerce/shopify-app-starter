@@ -25,24 +25,24 @@ function customFetch(app: ClientApplication) {
 }
 
 function Provider() {
-  const app = useAppBridge();
+  // const app = useAppBridge();
 
-  const client = new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      credentials: "include",
-      fetch: customFetch(app),
-    }),
-  });
+  // const client = new ApolloClient({
+  //   cache: new InMemoryCache(),
+  //   link: new HttpLink({
+  //     credentials: "include",
+  //     fetch: customFetch(app),
+  //   }),
+  // });
 
   return (
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
-    </ApolloProvider>
+    // <ApolloProvider client={client}>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </BrowserRouter>
+    // </ApolloProvider>
   );
 }
 

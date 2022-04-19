@@ -1,3 +1,3 @@
 # shopify-app-starter [WIP]
 
-Shopify App Starter. This is not ready yet an still work in progress
+Shopify App Starter. This is not ready yet and still work in progress

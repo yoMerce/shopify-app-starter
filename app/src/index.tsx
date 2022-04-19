@@ -7,8 +7,8 @@ import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <PolarisProvider i18n={translations}>
-      <App />
-    </PolarisProvider>
+    {/* <PolarisProvider i18n={translations}> */}
+    <App />
+    {/* </PolarisProvider> */}
   </React.StrictMode>
 );
