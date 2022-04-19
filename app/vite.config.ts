@@ -7,5 +7,8 @@ export default defineConfig({
     // "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY),
     // appOrigin: JSON.stringify(process.env.SHOPIFY_APP_URL.replace(/https:\/\//, "")),
   },
+  build: {
+    outDir: "../dist/client",
+  },
   plugins: [react()],
 });

@@ -1,10 +1,9 @@
-import * as fs from "fs";
+import path from "path";
 import Express from "express";
 import compression from "compression";
 import serveStatic from "serve-static";
 import cookieParser from "cookie-parser";
 import { Shopify } from "@shopify/shopify-api";
-import { resolve } from "path";
 
 // add session storage
 
@@ -60,16 +59,13 @@ app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 //     res.status(500).send(err.message);
 //   }
 // });
-
 app.use(Express.json());
 app.use(compression());
-app.use(serveStatic(resolve("dist/client")));
-app.use("/*", (req, res, next) => {
-  res
-    .status(200)
-    .set("Content-Type", "text/html")
-    .send(fs.readFileSync(`${process.cwd()}/dist/client/index.html`));
-});
+app.use(Express.static(path.resolve(__dirname, "../client")));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.resolve(__dirname, "..", "index.html"));
+// });
 
 // app.use("/", userRoutes);
 
