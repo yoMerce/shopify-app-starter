@@ -61,11 +61,7 @@ app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 // });
 app.use(Express.json());
 app.use(compression());
-app.use(Express.static(path.resolve(__dirname, "../client")));
-
-// app.get("*", (req, res) => {
-//   res.sendFile(path.resolve(__dirname, "..", "index.html"));
-// });
+app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
 
 // app.use("/", userRoutes);
 
