@@ -14,6 +14,10 @@ const loadSession = async (id: string) => {
 };
 const deleteSession = async (id: string) => true;
 
-const SessionStorage = new Shopify.Session.CustomSessionStorage(storeSession, loadSession, deleteSession);
+const SessionStorage = new Shopify.Session.CustomSessionStorage(
+  storeSession,
+  loadSession,
+  deleteSession
+);
 
 export default SessionStorage;

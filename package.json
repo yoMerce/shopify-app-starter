@@ -16,7 +16,8 @@
     "build:server": "cd server && yarn build",
     "prebuild": "rimraf dist",
     "build": "yarn build:app && yarn build:server",
-    "start": "NODE_ENV=production node dist/server/index.js"
+    "start": "NODE_ENV=production node -r dotenv/config dist/server/index.js",
+    "tunnel": "lt --port 8081"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
