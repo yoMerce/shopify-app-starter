@@ -1,5 +1,6 @@
 import app from "./app";
+import Config from "./config";
 
-app.listen(8050, () => {
-  console.log(`Running on 8050`);
+app.listen(Config.API.port, () => {
+  console.log(`Running on ${Config.API.port}`);
 });

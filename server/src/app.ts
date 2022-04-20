@@ -3,22 +3,23 @@ import Express from "express";
 import compression from "compression";
 import serveStatic from "serve-static";
 import cookieParser from "cookie-parser";
-import { Shopify } from "@shopify/shopify-api";
+import { ApiVersion, Shopify } from "@shopify/shopify-api";
+import SessionStorage from "./sessions";
 
 // add session storage
 
 // connect mongodb
 
 // Initialize shopify context
-// Shopify.Context.initialize({
-//   API_KEY: process.env.SHOPIFY_API_KEY,
-//   API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-//   SCOPES: process.env.SHOPIFY_API_SCOPES,
-//   HOST_NAME: process.env.SHOPIFY_APP_URL.replace(/https:\/\//, ""),
-//   API_VERSION: process.env.SHOPIFY_API_VERSION,
-//   IS_EMBEDDED_APP: true,
-//   SESSION_STORAGE: sessionStorage,
-// });
+Shopify.Context.initialize({
+  API_KEY: process.env.SHOPIFY_API_KEY,
+  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
+  SCOPES: (process.env.SHOPIFY_API_SCOPES || "").split(","),
+  HOST_NAME: process.env.SHOPIFY_APP_URL.replace(/https:\/\//, ""),
+  API_VERSION: ApiVersion.April22,
+  IS_EMBEDDED_APP: true,
+  SESSION_STORAGE: SessionStorage,
+});
 
 // register webhooks
 // Shopify.Webhooks.Registry.addHandlers({
