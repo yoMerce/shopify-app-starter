@@ -1,11 +1,9 @@
 import path from "path";
-import * as fs from "fs";
-import Express from "express";
-import compression from "compression";
-import serveStatic from "serve-static";
-import cookieParser from "cookie-parser";
 import { ApiVersion, Shopify } from "@shopify/shopify-api";
-import SessionStorage from "./sessions";
+import compression from "compression";
+import cookieParser from "cookie-parser";
+import Express, { json } from "express";
+import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
 import { verifyRequest } from "./middlewares";
 
@@ -54,15 +52,16 @@ app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 applyAuthMiddleware(app);
 
 // Graphql proxy for Shopify
-// app.post("/graphql", verifyRequest(app), async (req, res) => {
-//   try {
-//     const response = await Shopify.Utils.graphqlProxy(req, res);
-//     res.status(200).send(response.body);
-//   } catch (err) {
-//     res.status(500).send(err.message);
-//   }
-// });
-app.use(Express.json());
+app.post("/graphql", verifyRequest(app), async (req, res) => {
+  try {
+    const response = await Shopify.Utils.graphqlProxy(req, res);
+    res.status(200).send(response.body);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+app.use(json());
 app.use((req, res, next) => {
   const shop = req.query.shop;
   if (Shopify.Context.IS_EMBEDDED_APP && shop) {
@@ -80,8 +79,7 @@ app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
 
 app.use("/*", (req, res, next) => {
-  const shop = req.query.shop;
-  console.log(shop);
+  // const shop = req.query.shop;
 
   // Detect whether we need to reinstall the app, any request from Shopify will
   // include a shop in the query parameters.

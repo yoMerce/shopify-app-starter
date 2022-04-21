@@ -17,7 +17,9 @@
     "prebuild": "rimraf dist",
     "build": "yarn build:app && yarn build:server",
     "start": "NODE_ENV=production node -r dotenv/config dist/server/index.js",
-    "tunnel": "lt --port 8081"
+    "tunnel": "lt --port 8081",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
@@ -44,8 +46,17 @@
     "@types/mocha": "^9.1.0",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
     "@vitejs/plugin-react": "^1.3.0",
     "dotenv": "^16.0.0",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
     "lint-staged": "^12.3.8",
     "localtunnel": "^2.0.2",
     "nodemon": "^2.0.15",

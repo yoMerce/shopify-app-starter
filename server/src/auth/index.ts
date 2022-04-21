@@ -1,5 +1,5 @@
-import { Application } from "express";
 import { Shopify } from "@shopify/shopify-api";
+import { Application } from "express";
 
 import topLevelAuthRedirect from "./top-level-auth-redirect.js";
 
@@ -58,7 +58,7 @@ export default function applyAuthMiddleware(app: Application) {
       });
 
       if (!response["APP_UNINSTALLED"].success) {
-        console.log(`Failed to register APP_UNINSTALLED webhook: ${response.result}`);
+        // console.log(`Failed to register APP_UNINSTALLED webhook: ${response.result}`);
       }
 
       // Redirect to app with shop parameter upon auth
