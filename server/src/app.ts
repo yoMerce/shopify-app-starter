@@ -3,11 +3,14 @@ import { ApiVersion, Shopify } from "@shopify/shopify-api";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import Express, { json } from "express";
+import getLogger from "pino";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
 import { verifyRequest } from "./middlewares";
 
 const ACTIVE_SHOPIFY_SHOPS = {};
+
+export const logger = getLogger();
 
 // connect mongodb
 

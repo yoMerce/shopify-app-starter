@@ -1,7 +1,7 @@
 import { Shopify } from "@shopify/shopify-api";
 import { Application } from "express";
 
-import topLevelAuthRedirect from "./top-level-auth-redirect.js";
+import topLevelAuthRedirect from "./top-level-auth-redirect";
 
 export default function applyAuthMiddleware(app: Application) {
   app.get("/auth", async (req, res) => {
