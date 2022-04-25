@@ -424,10 +424,10 @@
     estree-walker "^2.0.1"
     picomatch "^2.2.2"
 
-"@s25digital/express-mw-logger@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@s25digital/express-mw-logger/-/express-mw-logger-1.0.0.tgz#f73ad470d21cc679a000516830cce017bc4634b3"
-  integrity sha512-C3+ZC9WGoloUeTDwj/aHuj0OKZoDkIPQa457yjOBv1qIakoL9z8T5WIfbTCVtZgmsZNYYyXA1FP237GeLK5qjw==
+"@s25digital/express-mw-logger@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@s25digital/express-mw-logger/-/express-mw-logger-1.1.0.tgz#a03890df5dd6cab56d48fc71d6b414ebf0280e44"
+  integrity sha512-y6CXOj83xwyr3vaKFmpGdC3PAitW+Wqk/Ki74f/5owlKcjc+1qJu93VGPz+HSbWyAL2yW6b9ANCmVTYPsZ01Fw==
   dependencies:
     pino "^7.10.0"
     uuid "^8.3.2"

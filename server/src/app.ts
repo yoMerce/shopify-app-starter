@@ -1,16 +1,19 @@
 import path from "path";
+import {
+  Logger,
+  getErrorHandlerMiddleware,
+  getLogReqMiddleware,
+  getLoggerMiddleware,
+} from "@s25digital/express-mw-logger";
 import { ApiVersion, Shopify } from "@shopify/shopify-api";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import Express, { json } from "express";
-import getLogger from "pino";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
 import { verifyRequest } from "./middlewares";
 
 const ACTIVE_SHOPIFY_SHOPS = {};
-
-export const logger = getLogger();
 
 // connect mongodb
 
@@ -51,6 +54,7 @@ app.set("use-online-tokens", true);
 app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
 
 app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
+app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
 
 applyAuthMiddleware(app);
 
@@ -93,5 +97,8 @@ app.use("/*", (req, res, next) => {
   // }
   next();
 });
+app.use(getLogReqMiddleware());
+app.use(getErrorHandlerMiddleware());
 
 export default app;
+export const logger = Logger;
