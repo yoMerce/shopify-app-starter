@@ -34,6 +34,7 @@
     "cryptr": "^6.0.3",
     "express": "^4.17.3",
     "graphql": "^16.3.0",
+    "mongodb": "^4.5.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
