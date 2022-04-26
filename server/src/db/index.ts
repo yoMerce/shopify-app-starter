@@ -7,7 +7,7 @@ let dbDriver: Db;
 
 const client = new MongoClient(Config.DB.connectionString);
 
-export async function connect() {
+async function connect() {
   try {
     await client.connect();
     dbDriver = client.db(Config.DB.name);
@@ -37,3 +37,13 @@ export async function DbMiddleware(req: IRequest, res: Response, next: NextFunct
     next(err);
   }
 }
+
+export async function getDbDriver() {
+  if (!dbDriver) {
+    await connect();
+  }
+
+  return dbDriver;
+}
+
+export * from "./enums";
