@@ -11,7 +11,8 @@ import cookieParser from "cookie-parser";
 import Express, { json } from "express";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
-import { verifyRequest } from "./middlewares";
+import setupGraphQLProxy from "./graphql";
+import { cspMiddleware } from "./middlewares";
 
 const ACTIVE_SHOPIFY_SHOPS = {};
 
@@ -58,29 +59,10 @@ app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
 
 applyAuthMiddleware(app);
 
-// Graphql proxy for Shopify
-app.post("/graphql", verifyRequest(app), async (req, res) => {
-  try {
-    const response = await Shopify.Utils.graphqlProxy(req, res);
-    res.status(200).send(response.body);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
+setupGraphQLProxy(app);
 
 app.use(json());
-app.use((req, res, next) => {
-  const shop = req.query.shop;
-  if (Shopify.Context.IS_EMBEDDED_APP && shop) {
-    res.setHeader(
-      "Content-Security-Policy",
-      `frame-ancestors https://${shop} https://admin.shopify.com;`
-    );
-  } else {
-    res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
-  }
-  next();
-});
+app.use(cspMiddleware);
 
 app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
