@@ -17,8 +17,6 @@ import SessionStorage from "./session";
 
 const ACTIVE_SHOPIFY_SHOPS = {};
 
-// connect mongodb
-
 // Initialize shopify context
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
