@@ -6,7 +6,7 @@ import { IShop } from "./shop";
 export interface IRequest extends Request {
   logger: Logger;
   db: Db;
-  shop: IShop;
+  shopInfo: IShop;
 }
 
 export * from "./shop";

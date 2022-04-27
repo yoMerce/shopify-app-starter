@@ -50,7 +50,7 @@ async function validateShop(req: IRequest, res: Response, next: NextFunction) {
       next();
     }
 
-    req.shop = doc;
+    req.shopInfo = doc;
     next();
   } catch (err) {
     logger.error({

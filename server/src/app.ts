@@ -67,10 +67,15 @@ app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"
 
 app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
   const shop = req.query.shop;
+  const { shopInfo } = req;
 
   // Detect whether we need to reinstall the app
   // any request from Shopify will include a shop in the query parameters.
-  if (req.shop && req.shop.isActive === false) {
+  if (shopInfo && shopInfo.isActive === false) {
+    res.redirect(`/auth?shop=${shop}`);
+  }
+
+  if (shopInfo && shopInfo.shop !== shop) {
     res.redirect(`/auth?shop=${shop}`);
   }
 
