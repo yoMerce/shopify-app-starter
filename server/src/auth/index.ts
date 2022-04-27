@@ -1,8 +1,22 @@
 import { IRequest } from "@interfaces";
 import { Shopify } from "@shopify/shopify-api";
 import { Application, Response, NextFunction } from "express";
+import { Db } from "mongodb";
+import { Collections } from "../db";
 
 import topLevelAuthRedirect from "./top-level-auth-redirect";
+
+async function updateShop(db: Db, shop: string) {
+  const collection = db.collection(Collections.Shops);
+
+  await collection.findOneAndUpdate(
+    { shop },
+    {
+      isActive: true,
+      modifiedOn: new Date(new Date().toISOString()),
+    }
+  );
+}
 
 export default function applyAuthMiddleware(app: Application) {
   app.get("/auth", async (req: IRequest, res: Response, next: NextFunction) => {
@@ -45,15 +59,15 @@ export default function applyAuthMiddleware(app: Application) {
   app.get("/auth/callback", async (req: IRequest, res: Response, next: NextFunction) => {
     try {
       const session = await Shopify.Auth.validateAuthCallback(req, res, req.query as any);
+      const db = req.db;
 
       const host = req.query.host;
-      app.set(
-        "active-shopify-shops",
-        Object.assign(app.get("active-shopify-shops"), {
-          [session.shop]: session.scope,
-        })
-      );
+      const { shop } = session;
 
+      // mark shop as active
+      await updateShop(db, shop);
+
+      // register uninstall hook
       const response = await Shopify.Webhooks.Registry.register({
         shop: session.shop,
         accessToken: session.accessToken,
@@ -67,7 +81,7 @@ export default function applyAuthMiddleware(app: Application) {
         });
       }
 
-      // Redirect to app with shop parameter upon auth
+      // Redirect to app once auth is complete
       res.redirect(`/?shop=${session.shop}&host=${host}`);
       next();
     } catch (e) {

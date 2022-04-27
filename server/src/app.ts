@@ -12,7 +12,7 @@ import Express, { json } from "express";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
 import setupGraphQLProxy from "./graphql";
-import { cspMiddleware } from "./middlewares";
+import { cspMiddleware, validateShop } from "./middlewares";
 import SessionStorage from "./session";
 
 const ACTIVE_SHOPIFY_SHOPS = {};
@@ -62,6 +62,7 @@ setupGraphQLProxy(app);
 
 app.use(json());
 app.use(cspMiddleware);
+app.use(validateShop);
 
 app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
