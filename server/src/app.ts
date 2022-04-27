@@ -16,8 +16,6 @@ import setupGraphQLProxy from "./graphql";
 import { cspMiddleware, validateShop } from "./middlewares";
 import SessionStorage from "./session";
 
-const ACTIVE_SHOPIFY_SHOPS = {};
-
 // Initialize shopify context
 Shopify.Context.initialize({
   API_KEY: process.env.SHOPIFY_API_KEY,
@@ -52,7 +50,6 @@ Shopify.Context.initialize({
 const app = Express();
 app.set("top-level-oauth-cookie", "shopify_top_level_oauth");
 app.set("use-online-tokens", true);
-app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
 
 app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
