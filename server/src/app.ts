@@ -1,4 +1,5 @@
 import path from "path";
+import { IRequest } from "@interfaces";
 import {
   Logger,
   getErrorHandlerMiddleware,
@@ -8,7 +9,7 @@ import {
 import { ApiVersion, Shopify } from "@shopify/shopify-api";
 import compression from "compression";
 import cookieParser from "cookie-parser";
-import Express, { json } from "express";
+import Express, { json, NextFunction, Response } from "express";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
 import setupGraphQLProxy from "./graphql";
@@ -67,16 +68,15 @@ app.use(validateShop);
 app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
 
-app.use("/*", (req, res, next) => {
-  // const shop = req.query.shop;
+app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
+  const shop = req.query.shop;
 
-  // Detect whether we need to reinstall the app, any request from Shopify will
-  // include a shop in the query parameters.
-  // if (app.get("active-shopify-shops")[shop] === undefined && shop) {
-  //   res.redirect(`/auth?shop=${shop}`);
-  // } else {
-  //   next();
-  // }
+  // Detect whether we need to reinstall the app
+  // any request from Shopify will include a shop in the query parameters.
+  if (req.shop && req.shop.isActive === false) {
+    res.redirect(`/auth?shop=${shop}`);
+  }
+
   next();
 });
 app.use(getLogReqMiddleware());
