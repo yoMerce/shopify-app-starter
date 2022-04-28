@@ -11,12 +11,11 @@ async function store(session: SessionInterface) {
   const collection = db.collection(Collections.Sessions);
 
   const doc = {
-    id: session.id,
     shop: session.shop,
     data: cipher.encrypt(JSON.stringify(session)),
   };
 
-  const res = await collection.findOneAndReplace({ id: session.id }, doc, {
+  const res = await collection.findOneAndReplace({ _id: session.id }, doc, {
     returnDocument: "after",
     upsert: true,
   });

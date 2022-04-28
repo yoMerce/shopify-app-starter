@@ -42,12 +42,12 @@ async function validateShop(req: IRequest, res: Response, next: NextFunction) {
       }
 
       res.redirect(`/auth?shop=${shop}`);
-      next();
+      return;
     }
 
     if (doc && doc.isActive === false) {
       res.redirect(`/auth?shop=${shop}`);
-      next();
+      return;
     }
 
     req.shopInfo = doc;

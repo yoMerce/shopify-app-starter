@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import Express, { json, NextFunction, Response } from "express";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
+import { DbMiddleware } from "./db";
 import setupGraphQLProxy from "./graphql";
 import { cspMiddleware, validateShop } from "./middlewares";
 import SessionStorage from "./session";
@@ -53,6 +54,7 @@ app.set("use-online-tokens", true);
 
 app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
+app.use(DbMiddleware);
 
 applyAuthMiddleware(app);
 
@@ -73,10 +75,12 @@ app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
   // any request from Shopify will include a shop in the query parameters.
   if (shopInfo && shopInfo.isActive === false) {
     res.redirect(`/auth?shop=${shop}`);
+    return;
   }
 
   if (shopInfo && shopInfo.shop !== shop) {
     res.redirect(`/auth?shop=${shop}`);
+    return;
   }
 
   next();

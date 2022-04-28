@@ -12,8 +12,10 @@ async function updateShop(db: Db, shop: string) {
   await collection.findOneAndUpdate(
     { shop },
     {
-      isActive: true,
-      modifiedOn: new Date(new Date().toISOString()),
+      $set: {
+        isActive: true,
+        modifiedOn: new Date(new Date().toISOString()),
+      },
     }
   );
 }
@@ -33,7 +35,6 @@ export default function applyAuthMiddleware(app: Application) {
     );
 
     res.redirect(redirectUrl);
-    next();
   });
 
   app.get("/auth/toplevel", (req: IRequest, res: Response, next: NextFunction) => {
@@ -52,8 +53,6 @@ export default function applyAuthMiddleware(app: Application) {
         shop: req.query.shop.toString(),
       })
     );
-
-    next();
   });
 
   app.get("/auth/callback", async (req: IRequest, res: Response, next: NextFunction) => {
@@ -83,7 +82,6 @@ export default function applyAuthMiddleware(app: Application) {
 
       // Redirect to app once auth is complete
       res.redirect(`/?shop=${session.shop}&host=${host}`);
-      next();
     } catch (e) {
       switch (true) {
         case e instanceof Shopify.Errors.InvalidOAuthError:
@@ -100,7 +98,6 @@ export default function applyAuthMiddleware(app: Application) {
           res.send(e.message);
           break;
       }
-      next();
     }
   });
 }

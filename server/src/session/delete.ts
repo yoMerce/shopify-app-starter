@@ -5,7 +5,7 @@ async function deleteSession(id: string) {
 
   const collection = db.collection(Collections.Sessions);
 
-  const res = await collection.deleteOne({ id });
+  const res = await collection.deleteOne({ _id: id });
 
   if (res.acknowledged === true) {
     return true;

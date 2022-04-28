@@ -10,7 +10,7 @@ async function load(id: string) {
 
   const collection = db.collection(Collections.Sessions);
 
-  const doc = await collection.findOne({ id });
+  const doc = await collection.findOne({ _id: id });
 
   if (doc) {
     const data = cipher.decrypt(doc.data);
