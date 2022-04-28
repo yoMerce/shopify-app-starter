@@ -19,7 +19,8 @@
     "start": "NODE_ENV=production node -r dotenv/config dist/server/index.js",
     "tunnel": "lt --port 8081",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "dev": "yarn build && yarn start"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",
