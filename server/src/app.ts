@@ -1,21 +1,22 @@
 import path from "path";
+import { IRequest } from "@interfaces";
 import {
   Logger,
   getErrorHandlerMiddleware,
   getLogReqMiddleware,
   getLoggerMiddleware,
 } from "@s25digital/express-mw-logger";
-import { ApiVersion, Shopify } from "@shopify/shopify-api";
+import { Shopify, ApiVersion } from "@shopify/shopify-api";
 import compression from "compression";
 import cookieParser from "cookie-parser";
-import Express, { json } from "express";
+import Express, { json, NextFunction, Response } from "express";
 import serveStatic from "serve-static";
 import applyAuthMiddleware from "./auth";
-import { verifyRequest } from "./middlewares";
-
-const ACTIVE_SHOPIFY_SHOPS = {};
-
-// connect mongodb
+import { DbMiddleware } from "./db";
+import setupGraphQLProxy from "./graphql";
+import { cspMiddleware, validateShop } from "./middlewares";
+import SessionStorage from "./session";
+import { setupWebhookRoute } from "./webhooks";
 
 // Initialize shopify context
 Shopify.Context.initialize({
@@ -25,76 +26,45 @@ Shopify.Context.initialize({
   HOST_NAME: process.env.SHOPIFY_APP_URL.replace(/https:\/\//, ""),
   API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
-  // SESSION_STORAGE: SessionStorage,
+  SESSION_STORAGE: SessionStorage,
 });
-
-// register webhooks
-// Shopify.Webhooks.Registry.addHandlers({
-//   APP_UNINSTALLED: {
-//     path: "/webhooks/app_uninstalled",
-//     webhookHandler: () => {},
-//   },
-//   CUSTOMERS_DATA_REQUEST: {
-//     path: "/webhooks/gdpr/customers_data_request",
-//     webhookHandler: () => {},
-//   },
-//   CUSTOMERS_REDACT: {
-//     path: "/webhooks/gdpr/customers_redact",
-//     webhookHandler: () => {},
-//   },
-//   SHOP_REDACT: {
-//     path: "/webhooks/gdpr/shop_redact",
-//     webhookHandler: () => {},
-//   },
-// });
 
 const app = Express();
 app.set("top-level-oauth-cookie", "shopify_top_level_oauth");
 app.set("use-online-tokens", true);
-app.set("active-shopify-shops", ACTIVE_SHOPIFY_SHOPS);
 
 app.use(cookieParser(Shopify.Context.API_SECRET_KEY));
 app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
+app.use(DbMiddleware);
 
 applyAuthMiddleware(app);
+setupWebhookRoute(app);
 
-// Graphql proxy for Shopify
-app.post("/graphql", verifyRequest(app), async (req, res) => {
-  try {
-    const response = await Shopify.Utils.graphqlProxy(req, res);
-    res.status(200).send(response.body);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
+setupGraphQLProxy(app);
 
 app.use(json());
-app.use((req, res, next) => {
-  const shop = req.query.shop;
-  if (Shopify.Context.IS_EMBEDDED_APP && shop) {
-    res.setHeader(
-      "Content-Security-Policy",
-      `frame-ancestors https://${shop} https://admin.shopify.com;`
-    );
-  } else {
-    res.setHeader("Content-Security-Policy", `frame-ancestors 'none';`);
-  }
-  next();
-});
+app.use(cspMiddleware);
+app.use(validateShop);
 
 app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
 
-app.use("/*", (req, res, next) => {
-  // const shop = req.query.shop;
+app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
+  const shop = req.query.shop;
+  const { shopInfo } = req;
 
-  // Detect whether we need to reinstall the app, any request from Shopify will
-  // include a shop in the query parameters.
-  // if (app.get("active-shopify-shops")[shop] === undefined && shop) {
-  //   res.redirect(`/auth?shop=${shop}`);
-  // } else {
-  //   next();
-  // }
+  // Detect whether we need to reinstall the app
+  // any request from Shopify will include a shop in the query parameters.
+  if (shopInfo && shopInfo.isActive === false) {
+    res.redirect(`/auth?shop=${shop}`);
+    return;
+  }
+
+  if (shopInfo && shopInfo.shop !== shop) {
+    res.redirect(`/auth?shop=${shop}`);
+    return;
+  }
+
   next();
 });
 app.use(getLogReqMiddleware());

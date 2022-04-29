@@ -10,7 +10,9 @@
     "outDir": "../dist/server",
     "types": ["node", "mocha"],
     "baseUrl": ".",
-    "paths": {},
+    "paths": {
+      "@interfaces": ["src/interfaces"]
+    },
     "resolveJsonModule": true
   },
   "include": ["src"]
