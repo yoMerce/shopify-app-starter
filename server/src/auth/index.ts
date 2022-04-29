@@ -1,6 +1,6 @@
 import { IRequest } from "@interfaces";
 import { Shopify } from "@shopify/shopify-api";
-import { Application, Response, NextFunction } from "express";
+import { Application, Response } from "express";
 import { Db } from "mongodb";
 import { Collections } from "../db";
 
@@ -21,7 +21,7 @@ async function updateShop(db: Db, shop: string) {
 }
 
 export default function applyAuthMiddleware(app: Application) {
-  app.get("/auth", async (req: IRequest, res: Response, next: NextFunction) => {
+  app.get("/auth", async (req: IRequest, res: Response) => {
     if (!req.signedCookies[app.get("top-level-oauth-cookie")]) {
       return res.redirect(`/auth/toplevel?shop=${req.query.shop}`);
     }
@@ -37,7 +37,7 @@ export default function applyAuthMiddleware(app: Application) {
     res.redirect(redirectUrl);
   });
 
-  app.get("/auth/toplevel", (req: IRequest, res: Response, next: NextFunction) => {
+  app.get("/auth/toplevel", (req: IRequest, res: Response) => {
     res.cookie(app.get("top-level-oauth-cookie"), "1", {
       signed: true,
       httpOnly: true,
@@ -55,7 +55,7 @@ export default function applyAuthMiddleware(app: Application) {
     );
   });
 
-  app.get("/auth/callback", async (req: IRequest, res: Response, next: NextFunction) => {
+  app.get("/auth/callback", async (req: IRequest, res: Response) => {
     try {
       const session = await Shopify.Auth.validateAuthCallback(req, res, req.query as any);
       const db = req.db;
@@ -66,19 +66,7 @@ export default function applyAuthMiddleware(app: Application) {
       // mark shop as active
       await updateShop(db, shop);
 
-      // register uninstall hook
-      const response = await Shopify.Webhooks.Registry.register({
-        shop: session.shop,
-        accessToken: session.accessToken,
-        topic: "APP_UNINSTALLED",
-        path: "/webhooks",
-      });
-
-      if (!response["APP_UNINSTALLED"].success) {
-        req.logger.info({
-          message: `Failed to register APP_UNINSTALLED webhook: ${response.result}`,
-        });
-      }
+      // register webhooks hook
 
       // Redirect to app once auth is complete
       res.redirect(`/?shop=${session.shop}&host=${host}`);

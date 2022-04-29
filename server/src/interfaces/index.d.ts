@@ -10,3 +10,4 @@ export interface IRequest extends Request {
 }
 
 export * from "./shop";
+export * from "./gdpr";

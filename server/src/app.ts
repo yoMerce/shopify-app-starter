@@ -16,6 +16,7 @@ import { DbMiddleware } from "./db";
 import setupGraphQLProxy from "./graphql";
 import { cspMiddleware, validateShop } from "./middlewares";
 import SessionStorage from "./session";
+import { setupWebhookRoute } from "./webhooks";
 
 // Initialize shopify context
 Shopify.Context.initialize({
@@ -28,26 +29,6 @@ Shopify.Context.initialize({
   SESSION_STORAGE: SessionStorage,
 });
 
-// register webhooks
-// Shopify.Webhooks.Registry.addHandlers({
-//   APP_UNINSTALLED: {
-//     path: "/webhooks/app_uninstalled",
-//     webhookHandler: () => {},
-//   },
-//   CUSTOMERS_DATA_REQUEST: {
-//     path: "/webhooks/gdpr/customers_data_request",
-//     webhookHandler: () => {},
-//   },
-//   CUSTOMERS_REDACT: {
-//     path: "/webhooks/gdpr/customers_redact",
-//     webhookHandler: () => {},
-//   },
-//   SHOP_REDACT: {
-//     path: "/webhooks/gdpr/shop_redact",
-//     webhookHandler: () => {},
-//   },
-// });
-
 const app = Express();
 app.set("top-level-oauth-cookie", "shopify_top_level_oauth");
 app.set("use-online-tokens", true);
@@ -57,6 +38,7 @@ app.use(getLoggerMiddleware({ name: "shopify-app-starter" }));
 app.use(DbMiddleware);
 
 applyAuthMiddleware(app);
+setupWebhookRoute(app);
 
 setupGraphQLProxy(app);
 
