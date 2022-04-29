@@ -2,7 +2,7 @@ import { Logger } from "@s25digital/express-mw-logger";
 import { Db } from "mongodb";
 import { Collections } from "../../db";
 
-async function getHandler(db: Db, logger: typeof Logger) {
+function getHandler(db: Db, logger: typeof Logger) {
   return async (topic: string, shop: string, body: string) => {
     logger.debug({
       message: `processiong webhook for ${topic}`,

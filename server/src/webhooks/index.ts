@@ -1,9 +1,10 @@
 import { IRequest } from "@interfaces";
 import { Logger } from "@s25digital/express-mw-logger";
 import Shopify from "@shopify/shopify-api";
-import { Application, Response } from "express";
+import { Application, NextFunction, Response } from "express";
 import { Db } from "mongodb";
-import handlerMap from "./handlers";
+import { WebhookTopics } from "./enum";
+import handlerMap, { getGDPRHandler } from "./handlers";
 import webhooks, { IWebhookConfig } from "./webhooks";
 
 interface IHandlerConfig {
@@ -15,14 +16,21 @@ interface IHandlerConfig {
 
 export function setupWebhookRoute(app: Application) {
   webhooks.forEach((item: IWebhookConfig) => {
-    app.post(`/webhooks${item.route}`, async (req: IRequest, res: Response) => {
+    app.post(`/webhooks${item.route}`, async (req: IRequest, res: Response, next: NextFunction) => {
       await Shopify.Webhooks.Registry.process(req, res);
+      res.status(200).send();
+      next();
     });
   });
+
+  // these endpoints need to be setup in the app configuration in partner portal
+  app.post("/webhooks/customer_data_request", getGDPRHandler(WebhookTopics.CUSTOMERS_DATA_REQUEST));
+  app.post("/webhooks/customer_redact", getGDPRHandler(WebhookTopics.CUSTOMERS_REDACT));
+  app.post("/webhooks/shop_redact", getGDPRHandler(WebhookTopics.SHOP_REDACT));
 }
 
 export async function setupWebhooks(shop: string, accessToken: string, logger: typeof Logger) {
-  await Promise.all(
+  return await Promise.all(
     webhooks.map(async (item: IWebhookConfig) => {
       const res = await Shopify.Webhooks.Registry.register({
         path: `/webhooks${item.route}`,
@@ -46,9 +54,10 @@ export async function setupWebhooks(shop: string, accessToken: string, logger: t
 export function setupHandlers(db: Db, logger: typeof Logger) {
   const handlerConfig: IHandlerConfig = {};
   webhooks.forEach((item: IWebhookConfig) => {
+    const getHandler = handlerMap.get(item.topic);
     handlerConfig[item.topic] = {
       path: item.route,
-      webhookHandler: handlerMap.get(item.topic)(db, logger),
+      webhookHandler: getHandler(db, logger),
     };
   });
 

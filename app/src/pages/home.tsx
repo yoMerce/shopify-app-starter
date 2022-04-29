@@ -9,7 +9,7 @@ function Home() {
         secondaryAction={{ content: "Learn more", url: "https://yomerce.com" }}
         image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
       >
-        <p>This is a shopify-starter-app by yomerce</p>
+        <p>This is a shopify-app-starter by yomerce</p>
       </EmptyState>
     </Card>
   );

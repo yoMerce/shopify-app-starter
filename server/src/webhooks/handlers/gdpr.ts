@@ -1,15 +1,14 @@
-import { IGDPR } from "@interfaces";
-import { Logger } from "@s25digital/express-mw-logger";
-import { Db } from "mongodb";
+import { IGDPR, IRequest } from "@interfaces";
+import { NextFunction, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { Collections } from "../../db";
 
-async function getHandler(db: Db, logger: typeof Logger) {
-  return async (topic: string, shop: string, body: string) => {
+function getHandler(topic: string) {
+  return async (req: IRequest, res: Response, next: NextFunction) => {
+    const { logger, db, body } = req;
     logger.debug({
       message: `processiong webhook for ${topic}`,
       topic,
-      shop,
       body,
     });
 
@@ -19,8 +18,12 @@ async function getHandler(db: Db, logger: typeof Logger) {
       _id: uuidv4(),
       data: JSON.parse(body),
       topic,
-      shop,
     });
+
+    res.status(200).send({
+      status: "recorded",
+    });
+    next();
   };
 }
 

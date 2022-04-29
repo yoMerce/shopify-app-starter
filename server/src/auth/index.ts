@@ -2,8 +2,8 @@ import { IRequest } from "@interfaces";
 import { Shopify } from "@shopify/shopify-api";
 import { Application, Response } from "express";
 import { Db } from "mongodb";
-import { setupWebhooks } from "src/webhooks";
 import { Collections } from "../db";
+import { setupWebhooks } from "../webhooks";
 
 import topLevelAuthRedirect from "./top-level-auth-redirect";
 
