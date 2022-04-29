@@ -2,6 +2,7 @@ import { IRequest } from "@interfaces";
 import { Shopify } from "@shopify/shopify-api";
 import { Application, Response } from "express";
 import { Db } from "mongodb";
+import { setupWebhooks } from "src/webhooks";
 import { Collections } from "../db";
 
 import topLevelAuthRedirect from "./top-level-auth-redirect";
@@ -58,15 +59,16 @@ export default function applyAuthMiddleware(app: Application) {
   app.get("/auth/callback", async (req: IRequest, res: Response) => {
     try {
       const session = await Shopify.Auth.validateAuthCallback(req, res, req.query as any);
-      const db = req.db;
+      const { db, logger } = req;
 
       const host = req.query.host;
-      const { shop } = session;
+      const { shop, accessToken } = session;
 
       // mark shop as active
       await updateShop(db, shop);
 
       // register webhooks hook
+      await setupWebhooks(shop, accessToken, logger);
 
       // Redirect to app once auth is complete
       res.redirect(`/?shop=${session.shop}&host=${host}`);
