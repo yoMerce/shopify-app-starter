@@ -8,6 +8,7 @@
   ],
   "author": "Yomerce (https://yomerce.com)",
   "scripts": {
+    "prepare": "husky install",
     "update": "ncu -u",
     "update:check": "ncu",
     "pretty": "prettier --write ./src",
