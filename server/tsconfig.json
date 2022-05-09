@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
-    "module": "commonjs",
+    "module": "esnext",
     "esModuleInterop": true,
     "target": "es2021",
     "noImplicitAny": true,
