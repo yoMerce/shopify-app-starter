@@ -6,6 +6,7 @@ This is a starter kit for developing shopify apps. It is build using:
 - Mongo
 - Polaris
 - React
+- Tailwindcss
 - Typescript
 
 The repository is inspired by the official app starter from shopify and uses code from it. The repository is written using typescript for both server and the app. The databse is Mongo and the repo comes with the setup for some basic collections to store sessions, shops and gdpr request data.
@@ -25,6 +26,14 @@ Build and run the app using the follwoing command
 ```
 yarn dev
 ```
+
+if you want to keep the server running with the watch on, you can use the following command
+
+```
+yarn dev:watch
+```
+
+The above command will look for any changes in server or the app folder and will rebuild the entire project. To avoid continuous building when you are in dev mode, the nodemon will delya the build by 15 secs and will batch all the changes in a single build.
 
 The above command will build the app (frontend) using vite and the server using typescript compiler. It will then start the app.
 
