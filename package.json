@@ -15,13 +15,16 @@
     "lint:staged": "lint-staged",
     "build:app": "cd app && yarn build",
     "build:server": "cd server && yarn build",
+    "build:server-watch": "cd server && yarn watch",
     "prebuild": "rimraf dist",
     "build": "yarn build:app && yarn build:server",
+    "build:watch": "yarn build:app && yarn build:server-watch",
     "start": "NODE_ENV=production node -r dotenv/config dist/server/index.js",
     "tunnel": "lt --port 8081",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "dev": "yarn build && yarn start"
+    "dev": "yarn build && yarn start",
+    "dev:watch": "nodemon --delay 15 --watch server/src --watch app/src --ext ts,tsx --ignore *.spec.tsx --ignore *.spec.ts -x yarn dev"
   },
   "dependencies": {
     "@apollo/client": "^3.6.2",
