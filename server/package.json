@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Yomerce (https://yomerce.com)",
   "scripts": {
-    "build": "tsc"
+    "build": "rollup -c rollup.config.js"
   },
   "dependencies": {},
   "devDependencies": {},
