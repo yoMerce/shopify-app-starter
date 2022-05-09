@@ -4,6 +4,7 @@ import translations from "@shopify/polaris/locales/en.json";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
+import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
