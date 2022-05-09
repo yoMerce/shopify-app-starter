@@ -7,6 +7,7 @@ This is a starter kit for developing shopify apps. It is build using:
 - Polaris
 - React
 - Tailwindcss
+- Typescript
 
 The repository is inspired by the official app starter from shopify and uses code from it. The repository is written using typescript for both server and the app. The databse is Mongo and the repo comes with the setup for some basic collections to store sessions, shops and gdpr request data.
 
