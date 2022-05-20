@@ -49,7 +49,7 @@ app.use(validateShop);
 app.use(compression());
 app.use(serveStatic(path.resolve(__dirname, "../client"), { index: ["index.html"] }));
 
-app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
+app.use("*", (req: IRequest, res: Response, next: NextFunction) => {
   const shop = req.query.shop;
   const { shopInfo } = req;
 
@@ -65,7 +65,8 @@ app.use("/*", (req: IRequest, res: Response, next: NextFunction) => {
     return;
   }
 
-  next();
+  const appPath = path.resolve(__dirname, "../client");
+  res.sendFile(path.join(appPath, "index.html"));
 });
 app.use(getLogReqMiddleware());
 app.use(getErrorHandlerMiddleware());
