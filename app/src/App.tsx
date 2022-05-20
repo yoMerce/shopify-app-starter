@@ -1,5 +1,4 @@
 import { Provider as AppBridgeProvider } from "@shopify/app-bridge-react";
-import "@shopify/polaris/build/esm/styles.css";
 
 import BaseProvider from "./BaseProvider";
 

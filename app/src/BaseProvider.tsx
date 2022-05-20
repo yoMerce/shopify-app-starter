@@ -3,8 +3,11 @@ import { ClientApplication } from "@shopify/app-bridge";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
+import { AppProvider } from "@shopify/polaris";
+import translations from "@shopify/polaris/locales/en.json";
+import { BrowserRouter } from "react-router-dom";
+import AppFrame from "./AppFrame";
+import Link from "./components/Link";
 
 function customFetch(app: ClientApplication) {
   const fetch = authenticatedFetch(app);
@@ -38,9 +41,9 @@ function Provider() {
   return (
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
+        <AppProvider i18n={translations} linkComponent={Link}>
+          <AppFrame />
+        </AppProvider>
       </BrowserRouter>
     </ApolloProvider>
   );
