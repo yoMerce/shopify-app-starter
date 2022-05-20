@@ -35,14 +35,12 @@ function AppFrame() {
               {
                 url: "/",
                 label: "Dashboard",
-              },
-              {
-                url: "/products",
-                label: "Products",
+                exactMatch: true,
               },
               {
                 url: "/settings",
                 label: "Settings",
+                exactMatch: true,
               },
             ]}
           />
