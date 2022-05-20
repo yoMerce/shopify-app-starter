@@ -48,3 +48,11 @@ this will ask for you to istall the app and shows you the scope configured in th
 ## Webhooks
 
 The repo configures the uninstall webhook by default. It also provides the endpoints for mandatory webhooks for GDPR purposes. You have to configure the mandatory webhooks directly in the app setup.
+
+## Navigation
+
+A basic navigation component is setup now to show how the navigation works in shopify ecosystem. Change the AppFrame.tsx file in app folder to setup your own navigation. If you dont need a navigation, you can delete the component.
+
+## Tailwindcss
+
+Tainwind CSS is setup with a prefix to avoid any issues with the classes. by default the CSS lines are commented out and you can uncomment the lines to use TailwindCss. The file to look at is index.css in app folder.
