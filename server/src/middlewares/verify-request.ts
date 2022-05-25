@@ -19,7 +19,12 @@ export default function verifyRequest(app: Application, { returnHeader = true } 
       return res.redirect(`/auth?shop=${shop}`);
     }
 
-    if (session?.isActive()) {
+    if (
+      session?.isOnline &&
+      session?.accessToken &&
+      session?.expires &&
+      session?.expires > new Date()
+    ) {
       try {
         // make a request to make sure oauth has succeeded, retry otherwise
         const client = new Shopify.Clients.Graphql(session.shop, session.accessToken);

@@ -15,7 +15,6 @@ function setupGraphQLProxy(app: Application) {
       } catch (err) {
         res.status(500).send(err.message);
       }
-      next();
     }
   );
 }
