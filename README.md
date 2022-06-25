@@ -2,7 +2,7 @@
 
 # v1 (Typescript version) is deprecated in favor of Shopify CLI v3 release as part of Shopify Editions. v1 is still available from the tag v1 and release tab.
 
-## This template will now evolve as an opinionated version derievd form the new template version available after Shopify Editions release.
+## This template will now evolve as an opinionated version derived from the new template version available after Shopify Editions release.
 
 
 
