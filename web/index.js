@@ -1,6 +1,5 @@
 // @ts-check
 import { join } from "path";
-import fs from "fs";
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Shopify, ApiVersion } from "@shopify/shopify-api";
@@ -10,35 +9,35 @@ import verifyRequest from "./middleware/verify-request.js";
 import { setupGDPRWebHooks } from "./gdpr.js";
 import { BillingInterval } from "./helpers/ensure-billing.js";
 
+import Config from "./config.js";
+
 const USE_ONLINE_TOKENS = true;
 const TOP_LEVEL_OAUTH_COOKIE = "shopify_top_level_oauth";
 
-const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
-const isTest = process.env.NODE_ENV === "test" || !!process.env.VITE_TEST_BUILD;
+const isTest = Config.ISTEST;
 
-const versionFilePath = "./version.txt";
-let templateVersion = "unknown";
-if (fs.existsSync(versionFilePath)) {
-  templateVersion = fs.readFileSync(versionFilePath, "utf8").trim();
-}
-
-// TODO: There should be provided by env vars
-const DEV_INDEX_PATH = `${process.cwd()}/frontend/`;
-const PROD_INDEX_PATH = `${process.cwd()}/frontend/dist/`;
-
-const DB_PATH = `${process.cwd()}/database.sqlite`;
+// const versionFilePath = "./version.txt";
+// let templateVersion = "unknown";
+// if (fs.existsSync(versionFilePath)) {
+//   templateVersion = fs.readFileSync(versionFilePath, "utf8").trim();
+// }
 
 Shopify.Context.initialize({
-  API_KEY: process.env.SHOPIFY_API_KEY,
-  API_SECRET_KEY: process.env.SHOPIFY_API_SECRET,
-  SCOPES: process.env.SCOPES.split(","),
-  HOST_NAME: process.env.HOST.replace(/https?:\/\//, ""),
-  HOST_SCHEME: process.env.HOST.split("://")[0],
+  API_KEY: Config.SHOPIFY.key,
+  API_SECRET_KEY: Config.SHOPIFY.secret,
+  SCOPES: Config.SHOPIFY.scopes.split(","),
+  HOST_NAME: Config.SHOPIFY.host.replace(/https?:\/\//, ""),
+  HOST_SCHEME: Config.SHOPIFY.host.split("://")[0],
   API_VERSION: ApiVersion.April22,
   IS_EMBEDDED_APP: true,
-  // This should be replaced with your preferred storage strategy
-  SESSION_STORAGE: new Shopify.Session.SQLiteSessionStorage(DB_PATH),
-  USER_AGENT_PREFIX: `Node App Template/${templateVersion}`,
+  SESSION_STORAGE: Shopify.Session.MongoDBSessionStorage.withCredentials(
+    Config.DB.host,
+    Config.DB.name,
+    Config.DB.user,
+    Config.DB.password,
+    { sessionCollectionName: "sessions" }
+  ),
+  USER_AGENT_PREFIX: `App Starter`,
 });
 
 // Storing the currently active shops in memory will force them to re-login when your server restarts. You should
@@ -148,7 +147,7 @@ export async function createServer(
       ({ default: fn }) => fn
     );
     app.use(compression());
-    app.use(serveStatic(PROD_INDEX_PATH));
+    app.use(serveStatic(Config.PROD_INDEX_PATH));
   }
 
   app.use("/*", async (req, res, next) => {
@@ -162,7 +161,7 @@ export async function createServer(
       // res.set('X-Shopify-App-Nothing-To-See-Here', '1');
       const fs = await import("fs");
       const fallbackFile = join(
-        isProd ? PROD_INDEX_PATH : DEV_INDEX_PATH,
+        isProd ? Config.PROD_INDEX_PATH : Config.DEV_INDEX_PATH,
         "index.html"
       );
       res
@@ -176,5 +175,5 @@ export async function createServer(
 }
 
 if (!isTest) {
-  createServer().then(({ app }) => app.listen(PORT));
+  createServer().then(({ app }) => app.listen(Config.API.port));
 }

@@ -15,5 +15,8 @@
     "@shopify/app": "3.0.24",
     "@shopify/cli": "3.0.24"
   },
-  "author": "simranjeetsingh"
+  "author": "simranjeetsingh",
+  "devDependencies": {
+    "dotenv": "^16.0.1"
+  }
 }
