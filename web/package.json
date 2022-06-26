@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "debug": "node --inspect-brk index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",
+    "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config index.js --ignore ./frontend",
     "serve": "cross-env NODE_ENV=production node index.js",
     "test": "vitest --reporter=verbose"
   },
