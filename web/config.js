@@ -1,21 +1,30 @@
-const { PORT, MONGO_USER, MONGO_PASSWORD, MONGO_HOST, DB_NAME, NODE_ENV, VITE_TEST_BUILD, SHOPIFY_API_SECRET, SHOPIFY_API_KEY, SCOPES, HOST } = process.env;
+const {
+  PORT,
+  MONGO_URI,
+  DB_NAME,
+  NODE_ENV,
+  VITE_TEST_BUILD,
+  SHOPIFY_API_SECRET,
+  SHOPIFY_API_KEY,
+  SCOPES,
+  HOST,
+  ENCRYPTION_KEY,
+} = process.env;
 
 const config = {
   API: {
     port: parseInt(PORT, 10) || 0,
   },
   DB: {
-    connectionString: "mongodb://".concat(encodeURIComponent(MONGO_USER), ":").concat(encodeURIComponent(MONGO_PASSWORD), "@").concat(MONGO_HOST, "/"),
-    host: MONGO_HOST || "",
-    user: MONGO_USER || "mongo",
-    password: MONGO_PASSWORD || "mongo",
+    connectionString: MONGO_URI || "mongodb://localhost:27017",
     name: DB_NAME || "appdb",
+    encryptionKey: ENCRYPTION_KEY || "test",
   },
   SHOPIFY: {
     key: SHOPIFY_API_KEY || "",
     secret: SHOPIFY_API_SECRET || "",
     scopes: SCOPES || "",
-    host: HOST || ""
+    host: HOST || "",
   },
   ISTEST: NODE_ENV === "test" || !!VITE_TEST_BUILD,
   DEV_INDEX_PATH: `${process.cwd()}/frontend/`,
