@@ -4,6 +4,7 @@ import { Collections } from "../db";
 
 import ensureBilling from "../billing/ensure-billing.js";
 import topLevelAuthRedirect from "./top-level-auth-redirect";
+import { setupWebhooks } from "../webhooks";
 
 async function updateShop(db, shop) {
   const collection = db.collection(Collections.Shops);
