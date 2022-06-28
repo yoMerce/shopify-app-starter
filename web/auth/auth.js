@@ -2,8 +2,8 @@ import { Shopify } from "@shopify/shopify-api";
 // import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
 import { Collections } from "../db";
 
-import ensureBilling from "../helpers/ensure-billing.js";
-import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
+import ensureBilling from "../billing/ensure-billing.js";
+import topLevelAuthRedirect from "./top-level-auth-redirect";
 
 async function updateShop(db, shop) {
   const collection = db.collection(Collections.Shops);
