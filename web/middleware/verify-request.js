@@ -1,16 +1,12 @@
+//@ts-check
+
 import { Shopify } from "@shopify/shopify-api";
 import ensureBilling, {
   ShopifyBillingError,
 } from "../billing/ensure-billing.js";
 
 import returnTopLevelRedirection from "../auth/return-top-level-redirection";
-
-const TEST_GRAPHQL_QUERY = `
-{
-  shop {
-    name
-  }
-}`;
+import { TEST_GRAPHQL_QUERY } from "../queries";
 
 export default function verifyRequest(
   app,
@@ -30,12 +26,7 @@ export default function verifyRequest(
       return res.redirect(`/api/auth?shop=${shop}`);
     }
 
-    if (
-      session?.isOnline &&
-      session?.accessToken &&
-      session?.expires &&
-      session?.expires > new Date()
-    ) {
+    if (session?.isActive()) {
       try {
         if (billing.required) {
           // The request to check billing status serves to validate that the access token is still valid.
@@ -63,6 +54,7 @@ export default function verifyRequest(
           e.response.code === 401
         ) {
           // Re-authenticate if we get a 401 response
+          return res.redirect(`/api/auth?shop=${shop}`);
         } else if (e instanceof ShopifyBillingError) {
           console.error(e.message, e.errorData[0]);
           res.status(500).end();

@@ -1,4 +1,5 @@
 //@ts-check
+import { Shopify } from "@shopify/shopify-api";
 import Cryptr from "cryptr";
 import Config from "../config";
 import { Collections, getDbDriver } from "../db";
@@ -16,6 +17,7 @@ async function load(id) {
     const data = cipher.decrypt(doc.data);
     const session = JSON.parse(data);
 
+    Object.setPrototypeOf(session, Shopify.Session.Session.prototype);
     return session;
   }
 
