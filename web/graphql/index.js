@@ -12,4 +12,12 @@ function setupGraphQL(app) {
   });
 }
 
+export async function queryShopify(shop, accessToken, query) {
+  const client = new Shopify.Clients.Graphql(
+    shop,
+    accessToken
+  );
+  return await client.query({ data: query });
+}
+
 export default setupGraphQL;
