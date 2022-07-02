@@ -5,9 +5,13 @@ import { Collections } from "../db";
 import ensureBilling from "../billing/ensure-billing.js";
 import topLevelAuthRedirect from "./top-level-auth-redirect";
 import { setupWebhooks } from "../webhooks";
+import { SHOP_INFO_QRY } from "../graphql/queries/shopInfo";
+import { queryShopify } from "../graphql";
 
-async function updateShop(db, shop) {
+async function updateShop(db, shop, accessToken) {
   const collection = db.collection(Collections.Shops);
+
+  const shopInfo = await queryShopify(shop, accessToken, SHOP_INFO_QRY);
 
   await collection.findOneAndUpdate(
     { shop },
@@ -15,6 +19,8 @@ async function updateShop(db, shop) {
       $set: {
         isActive: true,
         modifiedOn: new Date(new Date().toISOString()),
+        shopInfo: shopInfo?.body?.data?.shop,
+        uninstalledOn: null,
       },
     }
   );
@@ -78,7 +84,7 @@ export default function applyAuthMiddleware(
       const { shop, accessToken } = session;
 
       // mark shop as active
-      await updateShop(db, shop);
+      await updateShop(db, shop, accessToken);
 
       // const responses = await Shopify.Webhooks.Registry.registerAll({
       //   shop: session.shop,
