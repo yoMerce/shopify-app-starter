@@ -7,8 +7,7 @@ export function setupWebhookRoute(app) {
   webhooks.forEach((item) => {
     app.post(`/api/webhooks${item.route}`, async (req, res, next) => {
       await Shopify.Webhooks.Registry.process(req, res);
-      res.status(200).send();
-      next();
+      return res.status(200).send();
     });
   });
 

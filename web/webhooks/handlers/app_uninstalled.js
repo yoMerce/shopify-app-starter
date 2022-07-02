@@ -1,5 +1,6 @@
 //@ts-check
 
+import { v4 as uuidv4 } from "uuid";
 import { Collections } from "../../db";
 
 function getHandler(db, logger) {
@@ -12,8 +13,10 @@ function getHandler(db, logger) {
     });
 
     const collection = db.collection(Collections.Shops);
+    const sessionCollection = db.collection(Collections.Sessions);
+    const shopAuditCollection = db.collection(Collections.ShopAudit);
 
-    await collection.findOneAndUpdate(
+    const res = await collection.findOneAndUpdate(
       {
         shop,
       },
@@ -23,8 +26,17 @@ function getHandler(db, logger) {
           modifiedOn: new Date(new Date().toISOString()),
           uninstalledOn: new Date(new Date().toISOString()),
         },
+      }, {
+        returnDocument: "after"
       }
     );
+
+    await sessionCollection.deleteMany({ shop });
+
+    const auditObj = res.value;
+    auditObj.shopId = auditObj._id;
+    auditObj._id = uuidv4();
+    await shopAuditCollection.insertOne(auditObj);
   };
 }
 
