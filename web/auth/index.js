@@ -1,8 +1,30 @@
 import { Shopify } from "@shopify/shopify-api";
-import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
+// import { gdprTopics } from "@shopify/shopify-api/dist/webhooks/registry.js";
+import { Collections } from "../db";
 
-import ensureBilling from "../helpers/ensure-billing.js";
-import topLevelAuthRedirect from "../helpers/top-level-auth-redirect.js";
+import ensureBilling from "../billing/ensure-billing.js";
+import topLevelAuthRedirect from "./top-level-auth-redirect";
+import { setupWebhooks } from "../webhooks";
+import { SHOP_INFO_QRY } from "../graphql/queries/shopInfo";
+import { queryShopify } from "../graphql";
+
+async function updateShop(db, shop, accessToken) {
+  const collection = db.collection(Collections.Shops);
+
+  const shopInfo = await queryShopify(shop, accessToken, SHOP_INFO_QRY);
+
+  await collection.findOneAndUpdate(
+    { shop },
+    {
+      $set: {
+        isActive: true,
+        modifiedOn: new Date(new Date().toISOString()),
+        shopInfo: shopInfo?.body?.data?.shop,
+        uninstalledOn: null,
+      },
+    }
+  );
+}
 
 export default function applyAuthMiddleware(
   app,
@@ -55,29 +77,33 @@ export default function applyAuthMiddleware(
         req.query
       );
 
+      const { db, logger } = req;
+
       const host = req.query.host;
-      app.set(
-        "active-shopify-shops",
-        Object.assign(app.get("active-shopify-shops"), {
-          [session.shop]: session.scope,
-        })
-      );
 
-      const responses = await Shopify.Webhooks.Registry.registerAll({
-        shop: session.shop,
-        accessToken: session.accessToken,
-      });
+      const { shop, accessToken } = session;
 
-      Object.entries(responses).map(([topic, response]) => {
-        // The response from registerAll will include errors for the GDPR topics.  These can be safely ignored.
-        // To register the GDPR topics, please set the appropriate webhook endpoint in the
-        // 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard.
-        if (!response.success && !gdprTopics.includes(topic)) {
-          console.log(
-            `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
-          );
-        }
-      });
+      // mark shop as active
+      await updateShop(db, shop, accessToken);
+
+      // const responses = await Shopify.Webhooks.Registry.registerAll({
+      //   shop: session.shop,
+      //   accessToken: session.accessToken,
+      // });
+
+      // register webhooks hook
+      await setupWebhooks(shop, accessToken, logger);
+
+      // Object.entries(responses).map(([topic, response]) => {
+      //   // The response from registerAll will include errors for the GDPR topics.  These can be safely ignored.
+      //   // To register the GDPR topics, please set the appropriate webhook endpoint in the
+      //   // 'GDPR mandatory webhooks' section of 'App setup' in the Partners Dashboard.
+      //   if (!response.success && !gdprTopics.includes(topic)) {
+      //     console.log(
+      //       `Failed to register ${topic} webhook: ${response.result.errors[0].message}`
+      //     );
+      //   }
+      // });
 
       // If billing is required, check if the store needs to be charged right away to minimize the number of redirects.
       let redirectUrl = `/?shop=${session.shop}&host=${host}`;

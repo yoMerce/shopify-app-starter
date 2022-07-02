@@ -1,16 +1,13 @@
+//@ts-check
+
 import { Shopify } from "@shopify/shopify-api";
 import ensureBilling, {
   ShopifyBillingError,
-} from "../helpers/ensure-billing.js";
+} from "../billing/ensure-billing.js";
 
-import returnTopLevelRedirection from "../helpers/return-top-level-redirection.js";
-
-const TEST_GRAPHQL_QUERY = `
-{
-  shop {
-    name
-  }
-}`;
+import returnTopLevelRedirection from "../auth/return-top-level-redirection";
+import { TEST_GRAPHQL_QUERY } from "../graphql/queries";
+import { queryShopify } from "../graphql/index.js";
 
 export default function verifyRequest(
   app,
@@ -45,11 +42,11 @@ export default function verifyRequest(
           }
         } else {
           // Make a request to ensure the access token is still valid. Otherwise, re-authenticate the user.
-          const client = new Shopify.Clients.Graphql(
+          await queryShopify(
             session.shop,
-            session.accessToken
+            session.accessToken,
+            TEST_GRAPHQL_QUERY
           );
-          await client.query({ data: TEST_GRAPHQL_QUERY });
         }
         return next();
       } catch (e) {
@@ -58,6 +55,7 @@ export default function verifyRequest(
           e.response.code === 401
         ) {
           // Re-authenticate if we get a 401 response
+          return res.redirect(`/api/auth?shop=${shop}`);
         } else if (e instanceof ShopifyBillingError) {
           console.error(e.message, e.errorData[0]);
           res.status(500).end();
