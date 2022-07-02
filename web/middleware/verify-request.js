@@ -6,7 +6,8 @@ import ensureBilling, {
 } from "../billing/ensure-billing.js";
 
 import returnTopLevelRedirection from "../auth/return-top-level-redirection";
-import { TEST_GRAPHQL_QUERY } from "../queries";
+import { TEST_GRAPHQL_QUERY } from "../graphql/queries";
+import { queryShopify } from "../graphql/index.js";
 
 export default function verifyRequest(
   app,
@@ -41,11 +42,11 @@ export default function verifyRequest(
           }
         } else {
           // Make a request to ensure the access token is still valid. Otherwise, re-authenticate the user.
-          const client = new Shopify.Clients.Graphql(
+          await queryShopify(
             session.shop,
-            session.accessToken
+            session.accessToken,
+            TEST_GRAPHQL_QUERY
           );
-          await client.query({ data: TEST_GRAPHQL_QUERY });
         }
         return next();
       } catch (e) {
