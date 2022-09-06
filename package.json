@@ -1,5 +1,5 @@
 {
-  "name": "yocodes",
+  "name": "shopify-app-starter",
   "version": "1.0.0",
   "main": "web/index.js",
   "license": "UNLICENSED",
